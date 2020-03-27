@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="following_the_path" type="following_the_path" name="following_the_path" output="screen" />
+</launch>
