@@ -17,16 +17,16 @@ private:
   void Circle_Path (bool boo) {
     std::cout << "Circle_Path_Start" << std::endl;
 
-    for (int i=0; i<50; i++) {
-      vel_.linear.x = 0.15;
-      vel_.linear.y = 0.0;
-      cmd_vel_pub_.publish(vel_);
-      ros::Duration(0.2).sleep();
-    }
+//    for (int i=0; i<50; i++) {
+//      vel_.linear.x = 0.15;
+//      vel_.linear.y = 0.0;
+//      cmd_vel_pub_.publish(vel_);
+//      ros::Duration(0.2).sleep();
+//    }
 
-    double radius = 1, w = 0.4, Vx = 0, Vy = 0;
+    double radius = 1.2, w = 0.314, Vx = 0, Vy = 0;
     for(int t=0; t<times_; t++) {
-      for (int d=0; d<165; d++) {
+      for (int d=0; d<200; d++) {
         Vx = radius*w*cos(w*d/10);
         Vy = radius*w*sin(w*d/10);
         vel_.linear.x = Vx;
@@ -52,7 +52,7 @@ private:
       }
 
       for (int i=0; i<4; i++) {
-        vel_.linear.x = 0.3 - 0.5 * i;
+        vel_.linear.x = 0.3 - 0.05 * i;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
@@ -67,7 +67,7 @@ private:
 
       for (int i=0; i<4; i++) {
         vel_.linear.x = 0.0;
-        vel_.linear.y = 0.3 - 0.5 * i;
+        vel_.linear.y = 0.3 - 0.05 * i;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
       }
@@ -80,7 +80,7 @@ private:
       }
 
       for (int i=0; i<4; i++) {
-        vel_.linear.x = -0.3 + 0.5 * i;
+        vel_.linear.x = -0.3 + 0.05 * i;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
@@ -106,25 +106,23 @@ private:
   }
 
   void PathTypeCB (const std_msgs::String &str) {
-    switch ( str.data ) {
-      case "circle":
-        std::cout << "Circle" << std::endl;
-        Circle_Path(1);
-        break;
-      case "rectangle":
-        std::cout << "Rectangle" << std::endl;
-        Rectangle_Path(1);
-        break;
-      case "random":
-        std::cout << "Random" << std::endl;
-        Random_PathCB(const nav_msgs::Path &path);
-        break;
-      default :
-        std::cout << "Not a Selected Path" << std::endl;
-        break;
-    }
-
-    /*
+//    switch ( str.data ) {
+//      case "circle":
+//        std::cout << "Circle" << std::endl;
+//        Circle_Path(1);
+//        break;
+//      case "rectangle":
+//        std::cout << "Rectangle" << std::endl;
+//        Rectangle_Path(1);
+//        break;
+//      case "random":
+//        std::cout << "Random" << std::endl;
+//        Random_PathCB(const nav_msgs::Path &path);
+//        break;
+//      default :
+//        std::cout << "Not a Selected Path" << std::endl;
+//        break;
+//    }
     if (str.data == "rectangle") {
       std::cout << "Rectangle" << std::endl;
       Rectangle_Path(1);
@@ -133,7 +131,6 @@ private:
       std::cout << "Circle" << std::endl;
       Circle_Path(1);
     }
-    */
   }
 
   ros::NodeHandle nh_;
