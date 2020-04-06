@@ -6,6 +6,8 @@
 #include "geometry_msgs/Point.h"
 #include "nav_msgs/Path.h"
 #include "tf2_ros/transform_listener.h"
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 
 class FollowingThePath {
 public:
@@ -44,8 +46,15 @@ private:
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<4; i++) {
+      for (int i=0; i<6; i++) {
         vel_.linear.x = 0.3 - 0.05 * i;
+        vel_.linear.y = 0.0;
+        cmd_vel_pub_.publish(vel_);
+        ros::Duration(0.2).sleep();
+      }
+
+      for (int i=0; i<6; i++) {
+        vel_.linear.x = 0.0;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
@@ -58,9 +67,16 @@ private:
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<4; i++) {
+      for (int i=0; i<6; i++) {
         vel_.linear.x = 0.0;
         vel_.linear.y = 0.3 - 0.05 * i;
+        cmd_vel_pub_.publish(vel_);
+        ros::Duration(0.2).sleep();
+      }
+
+      for (int i=0; i<6; i++) {
+        vel_.linear.x = 0.0;
+        vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
       }
@@ -72,8 +88,15 @@ private:
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<4; i++) {
+      for (int i=0; i<6; i++) {
         vel_.linear.x = -0.3 + 0.05 * i;
+        vel_.linear.y = 0.0;
+        cmd_vel_pub_.publish(vel_);
+        ros::Duration(0.2).sleep();
+      }
+
+      for (int i=0; i<6; i++) {
+        vel_.linear.x = 0.0;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
@@ -93,49 +116,47 @@ private:
     std::cout << "Rectangle_Path_End" << std::endl;
   }
 
-  void Global_PathCB(const nav_msgs::Path &path) {
+  void Global_PathCB(const nav_msgs::Path path) {
     std::cout << "Global_Path_Start" << std::endl;
+    global_path_sub_.shutdown();
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
-    geometry_msgs::TransformStamped transformStamped
-    try {
-      transformStamped = tfBuffer.lookupTransform("base_footprint", "map", ros::Time(0));
-    }
-    catch (tf2::TransformException &ex) {
-      ROS_WARN("%s", ex.what());
-      ros::Duration(1.0).sleep();
-      continue;
-    }
+    geometry_msgs::TransformStamped transformStamped;
 
-    geometry_msgs::Transform path_map;
-    tf2_ros::Transform path_map_tf;
-    geometry_msgs::Transform path_aiv;
-    tf2_ros::Transform path_aiv_tf;
-    vector<geometry_msgs::Point> Positions;
-
-    for(int i=0; i<path->poses.size(); i++) {
-      path_map.translation.x = path->poses[i].pose.position.x;
-      path_map.translation.y = path->poses[i].pose.position.y;
-      path_map.translation.z = path->poses[i].pose.position.z;
-      path_map.rotation.x = path->poses[i].pose.orientation.x;
-      path_map.rotation.y = path->poses[i].pose.orientation.y;
-      path_map.rotation.z = path->poses[i].pose.orientation.z;
-      path_map.rotation.w = path->poses[i].pose.orientation.w;
-
-      tf2_ros::transformMsgToTF(path_map, path_map_tf);
-      tf2_ros::Transform path_aiv_tf = static_cast<tf2_ros::Transform>(transformStamped) * path_map_tf;
-      tf2_ros::transformTFToMsg(path_aiv_tf, path_aiv);
-
-      Positions[i].x.push_back(path_aiv.translation.x);
-      Positions[i].y.push_back(path_aiv.translation.y);
+    for(int i=0; i<5; i++) {
+      try {
+        transformStamped = tfBuffer.lookupTransform("base_link", "map", ros::Time(0));
+        std::cout << "Get Transform" << std::endl;
+        break;
+      }
+      catch (tf2::TransformException &ex) {
+        ROS_WARN("%s", ex.what());
+        ros::Duration(0.2).sleep();
+        continue;
+      }
     }
 
-    vector<geometry_msgs::Point> Velocity;
+    geometry_msgs::Pose path2aiv;
+    geometry_msgs::Point temp;
+    std::vector<geometry_msgs::Point> Positions;
 
-    for(int i=0; i<Positions.size()-1; i++) {
-      Velocity.x.push_back((Positions[i+1].x-Positions[i]).x/0.1);
-      Velocity.y.push_back((Positions[i+1].y-Positions[i]).y/0.1);
-      Velocity.z.push_back(0);
+
+    for(int i=0; i<path.poses.size(); i++) {
+      tf2::doTransform(path.poses[i].pose, path2aiv, transformStamped);
+      temp.x = path2aiv.position.x;
+      temp.y = path2aiv.position.y;
+      temp.z = 0.0;
+      Positions.push_back(temp);
+    }
+
+
+
+    std::vector<geometry_msgs::Point> Velocity;
+    for(int i=0; i<Positions.size()-4; i++) {
+      temp.x = (Positions[i+1].x-Positions[i].x)/0.1;
+      temp.y = (Positions[i+1].y-Positions[i].y)/0.1;
+      temp.z = 0.0;
+      Velocity.push_back(temp);
     }
 
     for(int i=0; i<Velocity.size(); i++) {
