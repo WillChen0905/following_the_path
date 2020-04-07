@@ -46,14 +46,14 @@ private:
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<6; i++) {
-        vel_.linear.x = 0.3 - 0.05 * i;
+      for (int i=0; i<20; i++) {
+        vel_.linear.x = 0.3 - 0.015 * i;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<6; i++) {
+      for (int i=0; i<5; i++) {
         vel_.linear.x = 0.0;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
@@ -67,14 +67,14 @@ private:
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<6; i++) {
+      for (int i=0; i<20; i++) {
         vel_.linear.x = 0.0;
-        vel_.linear.y = 0.3 - 0.05 * i;
+        vel_.linear.y = 0.3 - 0.015 * i;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<6; i++) {
+      for (int i=0; i<5; i++) {
         vel_.linear.x = 0.0;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
@@ -88,14 +88,14 @@ private:
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<6; i++) {
-        vel_.linear.x = -0.3 + 0.05 * i;
+      for (int i=0; i<20; i++) {
+        vel_.linear.x = -0.3 + 0.015 * i;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
         ros::Duration(0.2).sleep();
       }
 
-      for (int i=0; i<6; i++) {
+      for (int i=0; i<5; i++) {
         vel_.linear.x = 0.0;
         vel_.linear.y = 0.0;
         cmd_vel_pub_.publish(vel_);
@@ -110,9 +110,19 @@ private:
       }
 
     }
-    vel_.linear.x = 0;
-    vel_.linear.y = 0;
-    cmd_vel_pub_.publish(vel_);
+    for (int i=0; i<20; i++) {
+      vel_.linear.x = 0.0;
+      vel_.linear.y = -0.3 + 0.015 * i;
+      cmd_vel_pub_.publish(vel_);
+      ros::Duration(0.2).sleep();
+    }
+
+    for (int i=0; i<5; i++) {
+      vel_.linear.x = 0.0;
+      vel_.linear.y = 0.0;
+      cmd_vel_pub_.publish(vel_);
+      ros::Duration(0.2).sleep();
+    }
     std::cout << "Rectangle_Path_End" << std::endl;
   }
 
