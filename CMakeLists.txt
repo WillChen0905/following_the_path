@@ -18,3 +18,6 @@ include_directories(
 
 add_executable(following_the_path src/following_the_path.cpp)
 target_link_libraries(following_the_path ${catkin_LIBRARIES})
+add_executable(read_path src/read_path.cpp)
+target_link_libraries(read_path ${catkin_LIBRARIES})
+
